@@ -1,6 +1,8 @@
 import BitcoinWalletHelper from 'js-btc/lib/bitcoin/bitcoin_wallet'
 import TetherRpcUtil from './tether_rpc'
 import ErrorHelper from 'p-js-error'
+import 'node-assist'
+import 'js-node-assist'
 
 export default class TetherWalletHelper extends BitcoinWalletHelper {
   /**
@@ -17,7 +19,7 @@ export default class TetherWalletHelper extends BitcoinWalletHelper {
       [
         {
           address: 'moneyqMan7uh8FqdCA2BV5yZ8qVrc9ikLP',
-          amount: amount.div(1E2)
+          amount: amount.div_(1E2)
         }
       ],
       fee,
@@ -47,7 +49,7 @@ export default class TetherWalletHelper extends BitcoinWalletHelper {
     const payload = await TetherRpcUtil.createSimpleSendPayload(rpcClient, amount, tokenType)
     utxos.forEach((utxo) => {
       const { balance, index } = utxo
-      utxo['value'] = this.satoshiToBtc(balance)
+      utxo['value'] = balance.unShiftedBy_(this.decimals)
       utxo['vout'] = index
     })
     const unsignedRawTx = await rpcClient.createRawTransaction(utxos, {})
@@ -56,24 +58,24 @@ export default class TetherWalletHelper extends BitcoinWalletHelper {
     for (let {address, amount} of targets) {
       withReference = await TetherRpcUtil.attachReference(rpcClient, withReference, address, amount)
     }
-    const withChange = await TetherRpcUtil.attachChangeOutput(rpcClient, withReference, utxos, changeAddress, fee.unShiftedBy(8))
+    const withChange = await TetherRpcUtil.attachChangeOutput(rpcClient, withReference, utxos, changeAddress, fee.unShiftedBy_(8))
     let result = await this.signTxHex(withChange, utxos, network)
     let inputAmount = '0'
     utxos.forEach((utxo) => {
-      inputAmount = inputAmount.add(utxo['balance'])
+      inputAmount = inputAmount.add_(utxo['balance'])
     })
 
-    result[`fee`] = fee.unShiftedBy(8)
-    result[`inputAmount`] = inputAmount.unShiftedBy(8)
+    result[`fee`] = fee.unShiftedBy_(8)
+    result[`inputAmount`] = inputAmount.unShiftedBy_(8)
     return result
   }
 
   getOmniPayload (amount, currency = `USDT`) {
-    const hexAmount = amount.decimalToHexString(false).padStart(16, '0').toUpperCase()
+    const hexAmount = amount.decimalToHexString_(false).padStart(16, '0').toUpperCase()
     const omniPayload = [
       '6f6d6e69', // omni
       // 31 for Tether, you can modify it depends on your regtest chain
-      this.getCurrencyIdByCurrency(currency).toString().decimalToHexString(false).padStart(16, '0'),
+      this.getCurrencyIdByCurrency(currency).toString().decimalToHexString_(false).padStart(16, '0'),
       hexAmount,
     ].join('')
     return omniPayload
@@ -108,7 +110,7 @@ export default class TetherWalletHelper extends BitcoinWalletHelper {
       throw new ErrorHelper(`没有输入`)
     }
 
-    if (fee.gt(`10000000`)) {
+    if (fee.gt_(`10000000`)) {
       throw new ErrorHelper(`手续费过高，请检查`)
     }
 
@@ -119,25 +121,25 @@ export default class TetherWalletHelper extends BitcoinWalletHelper {
       } else {
         txBuilder.addInput(txid, index)
       }
-      totalUtxoBalance = totalUtxoBalance.add(balance)
+      totalUtxoBalance = totalUtxoBalance.add_(balance)
     }
 
     // 添加usdt输出
-    const data = [ this.getOmniPayload(amount).hexToBuffer() ]
+    const data = [ this.getOmniPayload(amount).hexToBuffer_() ]
 
     const omniOutput = this._bitcoin.payments.embed({ data }).output
 
     const dustValue = `546`
-    txBuilder.addOutput(targetAddress, dustValue.toNumber()) // should be first!
+    txBuilder.addOutput(targetAddress, dustValue.toNumber_()) // should be first!
     txBuilder.addOutput(omniOutput, 0)
 
     let targetTotalAmount = '0'
     // 计算要发送出去的总额
     targets.forEach((target) => {
       const {amount} = target
-      targetTotalAmount = targetTotalAmount.add(amount.toString())
+      targetTotalAmount = targetTotalAmount.add_(amount.toString())
     })
-    targetTotalAmount = targetTotalAmount.add(dustValue)
+    targetTotalAmount = targetTotalAmount.add_(dustValue)
 
     const outputWithIndex = []
     for (let target of targets) {
@@ -148,7 +150,7 @@ export default class TetherWalletHelper extends BitcoinWalletHelper {
       }
       let index = null
       try {
-        index = txBuilder.addOutput(outputScript, amount.toNumber())
+        index = txBuilder.addOutput(outputScript, amount.toNumber_())
         outputWithIndex.push(Object.assign(target, {
           index
         }))
@@ -156,17 +158,17 @@ export default class TetherWalletHelper extends BitcoinWalletHelper {
         throw new ErrorHelper('构造output出错' + err['message'], 0, JSON.stringify(target), err)
       }
     }
-    if (fee.lt(1000)) {
+    if (fee.lt_(1000)) {
       fee = '1000'
     }
     // 添加找零的输出
-    const changeAmount = totalUtxoBalance.sub(targetTotalAmount).sub(fee.toString())
-    if (changeAmount.lt(0)) {
+    const changeAmount = totalUtxoBalance.sub_(targetTotalAmount).sub_(fee.toString())
+    if (changeAmount.lt_(0)) {
       throw new ErrorHelper(`balance not enough`)
     }
     if (changeAmount !== '0') {
-      const amount = totalUtxoBalance.sub(targetTotalAmount).sub(fee.toString())
-      const index = txBuilder.addOutput(changeAddress, amount.toNumber())
+      const amount = totalUtxoBalance.sub_(targetTotalAmount).sub_(fee.toString())
+      const index = txBuilder.addOutput(changeAddress, amount.toNumber_())
       outputWithIndex.push({
         address: changeAddress,
         amount,

@@ -1,4 +1,6 @@
 /** @module */
+import 'node-assist'
+import 'js-node-assist'
 
 /**
  * usdt rpc调用工具

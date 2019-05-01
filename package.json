@@ -1,6 +1,6 @@
 {
   "name": "js-tether",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "tether tool of js",
   "keywords": [
     "common",
@@ -23,10 +23,7 @@
     "test": "mocha -t 20000 -R spec --compilers js:babel-core/register --require babel-polyfill tests/*.test.js"
   },
   "devDependencies": {
-    "babel-preset-env": "^1.7.0",
-    "bitcoin-core": "^2.0.0",
-    "btc-bitcoinjs-lib": "^5.0.2",
-    "node-assist": "^0.4.4"
+    "babel-preset-env": "^1.7.0"
   },
   "babel": {
     "presets": [
@@ -48,6 +45,9 @@
     "bigi": "^1.4.2",
     "js-btc": "^0.1.2",
     "p-js-error": "^0.0.4",
-    "p-js-utils": "^0.0.7"
+    "p-js-utils": "^0.0.7",
+    "bitcoin-core": "^2.0.0",
+    "btc-bitcoinjs-lib": "^5.0.2",
+    "node-assist": "^0.4.4"
   }
 }

@@ -1,6 +1,5 @@
-import 'node-assist'
-import TetherWalletHelper from './tether_wallet'
-import TetherRpcUtil from './tether_rpc'
+import 'js-node-assist'
+import TetherWalletHelper from './wallet'
 import assert from 'assert'
 
 describe('usdtWalletHelper', () => {

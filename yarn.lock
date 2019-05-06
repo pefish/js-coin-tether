@@ -997,16 +997,16 @@ isstream@~0.1.2:
   resolved "https://registry.yarnpkg.com/isstream/-/isstream-0.1.2.tgz#47e63f7af55afa6f92e1500e690eb8b8529c099a"
   integrity sha1-R+Y/evVa+m+S4VAOaQ64uFKcCZo=
 
-js-btc@^0.1.7:
-  version "0.1.7"
-  resolved "https://registry.yarnpkg.com/js-btc/-/js-btc-0.1.7.tgz#1856d3c98089b7137fa5cf00426e79ee851116cc"
-  integrity sha512-NNF2RLwceHOIoeEZvpQ1he/4H1du6kZzaFLMz2bojtotGZ1gG5sS8l66E3iDFOptDiSN7M5B7RR9uEOFlLTrAw==
+js-btc@^0.2.4:
+  version "0.2.4"
+  resolved "https://registry.yarnpkg.com/js-btc/-/js-btc-0.2.4.tgz#7e95f25533051f72dc297c2f7a9280507cc44a08"
+  integrity sha512-8upPl41J1dWoyha6/QvZyDIDnaGwDJMbLkYZDQKuRYsoVXi9u5XHtG1q2kuTEA8Xa7IO3tyNVyXgx8ZkO7TRQg==
   dependencies:
     bip32 "^1.0.4"
     bip39 "^3.0.1"
     bitcoin-core "^2.0.0"
     btc-bitcoinjs-lib "^5.0.5"
-    node-assist "^0.4.0"
+    js-node-assist "^0.5.6"
     p-js-error "^0.0.4"
     p-js-utils "^0.0.8"
 
@@ -1167,15 +1167,6 @@ ncp@~2.0.0:
   resolved "https://registry.yarnpkg.com/ncp/-/ncp-2.0.0.tgz#195a21d6c46e361d2fb1281ba38b91e9df7bdbb3"
   integrity sha1-GVoh1sRuNh0vsSgbo4uR6d9727M=
 
-node-assist@^0.4.0, node-assist@^0.4.6:
-  version "0.4.6"
-  resolved "https://registry.yarnpkg.com/node-assist/-/node-assist-0.4.6.tgz#da9cddc1f4ee1ca154b2dd53cf37b62939b0d944"
-  integrity sha512-daoNe+mL+5JcjAgYbg149CoGsK3CR2kbsQjR2L91SkP2BOD+ADUcfGXSdHDv7Ho2SfeEuUEkcPyZgbOF3Mb1WA==
-  dependencies:
-    bignumber.js "^8.1.1"
-    p-js-assert "^0.0.1"
-    p-js-error "^0.0.4"
-
 oauth-sign@~0.9.0:
   version "0.9.0"
   resolved "https://registry.yarnpkg.com/oauth-sign/-/oauth-sign-0.9.0.tgz#47a7b016baa68b5fa0ecf3dee08a85c679ac6455"
@@ -1200,11 +1191,6 @@ p-js-error@^0.0.4:
   version "0.0.4"
   resolved "https://registry.yarnpkg.com/p-js-error/-/p-js-error-0.0.4.tgz#ae7dbba4f998576012bb818227961b7961cc9902"
   integrity sha512-voF6p/u1QP+7UMMqZLucmnXHN5JncAvyeKjlvGVRQ9HuFhIL/RBxZ0gN0g1UXaRNdsOorWNfnNHuTGKNMN7toA==
-
-p-js-utils@^0.0.7:
-  version "0.0.7"
-  resolved "https://registry.yarnpkg.com/p-js-utils/-/p-js-utils-0.0.7.tgz#184255ba93def907c59b28de959dc6f24c6447b3"
-  integrity sha512-NNLQfr8eBb4KysGCoKOqaAqn/q9mWm9ZYmz3BJyvnZAy5fqHE69A1twwKZoUTLRrUYdg4RaTDJ/SQndP8AQpWQ==
 
 p-js-utils@^0.0.8:
   version "0.0.8"

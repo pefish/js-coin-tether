@@ -1,5 +1,4 @@
 /** @module */
-import 'node-assist'
 import 'js-node-assist'
 
 /**

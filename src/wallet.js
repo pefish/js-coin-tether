@@ -1,10 +1,9 @@
-import BitcoinWalletHelper from 'js-btc/lib/bitcoin/bitcoin_wallet'
-import TetherRpcUtil from './tether_rpc'
+import BaseBitcoinWalletHelper from 'js-btc/lib/base/base_bitcoinjs_lib'
+import TetherRpcUtil from './rpc'
 import ErrorHelper from 'p-js-error'
-import 'node-assist'
 import 'js-node-assist'
 
-export default class TetherWalletHelper extends BitcoinWalletHelper {
+export default class TetherWalletHelper extends BaseBitcoinWalletHelper {
   /**
    * 获取usdt测试币
    * @param utxos

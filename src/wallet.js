@@ -163,7 +163,7 @@ export default class TetherWalletHelper extends BaseBitcoinWalletHelper {
     // 添加找零的输出
     const changeAmount = totalUtxoBalance.sub_(targetTotalAmount).sub_(fee.toString())
     if (changeAmount.lt_(0)) {
-      throw new ErrorHelper(`balance not enough`)
+      throw new ErrorHelper(`btc balance not enough`)
     }
     if (changeAmount !== '0') {
       const amount = totalUtxoBalance.sub_(targetTotalAmount).sub_(fee.toString())

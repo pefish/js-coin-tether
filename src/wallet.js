@@ -4,6 +4,12 @@ import ErrorHelper from 'p-js-error'
 import 'js-node-assist'
 
 export default class TetherWalletHelper extends BaseBitcoinWalletHelper {
+  constructor () {
+    super()
+    this.decimals = 8
+    this.bitcoinLib = require('btc-bitcoinjs-lib')
+  }
+
   /**
    * 获取usdt测试币
    * @param utxos

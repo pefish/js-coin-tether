@@ -1,10 +1,10 @@
-import 'js-node-assist'
+import '@pefish/js-node-assist'
 import TetherWalletHelper from './wallet'
 import assert from 'assert'
 
 describe('usdtWalletHelper', () => {
 
-  let walletHelper, rpcClient
+  let walletHelper
 
   before(async () => {
     walletHelper = new TetherWalletHelper()
@@ -23,7 +23,7 @@ describe('usdtWalletHelper', () => {
       // logger.error(result)
       assert.strictEqual(result, '6f6d6e69000000000000001f000000003B9ACA00')
     } catch (err) {
-      logger.error(err)
+      global.logger.error(err)
       assert.throws(() => {
       }, err)
     }

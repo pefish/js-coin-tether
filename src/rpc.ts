@@ -1,5 +1,5 @@
 /** @module */
-import 'js-node-assist'
+import '@pefish/js-node-assist'
 
 /**
  * usdt rpc调用工具
@@ -35,7 +35,7 @@ export default class TetherRpcUtil {
   static async createSimpleSendPayload (rpcClient, amount, tokenType = 31) {
     return TetherRpcUtil.request(rpcClient, 'omni_createpayload_simplesend', [
       tokenType,
-      amount.unShiftedBy(8)
+      amount.unShiftedBy_(8)
     ])
   }
 
@@ -66,7 +66,7 @@ export default class TetherRpcUtil {
       txHex,
       targetAddress
     ]
-    amount && params.push(amount.unShiftedBy(8).toNumber())
+    amount && params.push(amount.unShiftedBy_(8).toNumber_())
     return TetherRpcUtil.request(rpcClient, 'omni_createrawtx_reference', params)
   }
 
@@ -94,9 +94,9 @@ export default class TetherRpcUtil {
    * @param blockHeight {string | number}
    * @returns {Promise<void>}
    */
-  static async listBlockTransactions (rpcClient, blockHeight) {
+  static async listBlockTransactions (rpcClient, blockHeight: number) {
     return TetherRpcUtil.request(rpcClient, 'omni_listblocktransactions', [
-      blockHeight.toNumber()
+      blockHeight
     ])
   }
 

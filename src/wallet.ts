@@ -1,13 +1,18 @@
-import BaseBitcoinWalletHelper from 'js-btc/lib/base/base_bitcoinjs_lib'
+import '@pefish/js-node-assist'
+import BaseBitcoinWalletHelper from '@pefish/js-coin-btc/lib/base/base_bitcoinjs_lib'
 import TetherRpcUtil from './rpc'
-import ErrorHelper from 'p-js-error'
-import 'js-node-assist'
+import ErrorHelper from '@pefish/js-error'
 
 export default class TetherWalletHelper extends BaseBitcoinWalletHelper {
+
+  [x: string]: any;
+
+  decimals: number = 8
+  bitcoinLib: any
+
   constructor () {
     super()
-    this.decimals = 8
-    this.bitcoinLib = require('btc-bitcoinjs-lib')
+    this.bitcoinLib = require('@pefish/bitcoinjs-lib')
   }
 
   /**
@@ -60,11 +65,11 @@ export default class TetherWalletHelper extends BaseBitcoinWalletHelper {
     const unsignedRawTx = await rpcClient.createRawTransaction(utxos, {})
     const unsignedRawTxWithOpReturn = await TetherRpcUtil.attachOpReturn(rpcClient, unsignedRawTx, payload)
     let withReference = await TetherRpcUtil.attachReference(rpcClient, unsignedRawTxWithOpReturn, targetAddress, targetAmount)
-    for (let {address, amount} of targets) {
+    for (const {address, amount} of targets) {
       withReference = await TetherRpcUtil.attachReference(rpcClient, withReference, address, amount)
     }
     const withChange = await TetherRpcUtil.attachChangeOutput(rpcClient, withReference, utxos, changeAddress, fee.unShiftedBy_(8))
-    let result = await this.signTxHex(withChange, utxos, network)
+    const result = await this.signTxHex(withChange, utxos, network)
     let inputAmount = '0'
     utxos.forEach((utxo) => {
       inputAmount = inputAmount.add_(utxo['balance'])
@@ -119,8 +124,8 @@ export default class TetherWalletHelper extends BaseBitcoinWalletHelper {
       throw new ErrorHelper(`手续费过高，请检查`)
     }
 
-    for (let utxo of utxos) {
-      let {txid, index, balance, sequence} = utxo
+    for (const utxo of utxos) {
+      const {txid, index, balance, sequence} = utxo
       if (sequence !== undefined) {
         txBuilder.addInput(txid, index, sequence)
       } else {
@@ -147,7 +152,7 @@ export default class TetherWalletHelper extends BaseBitcoinWalletHelper {
     targetTotalAmount = targetTotalAmount.add_(dustValue)
 
     const outputWithIndex = []
-    for (let target of targets) {
+    for (const target of targets) {
       const {address, amount, msg} = target
       let outputScript = address
       if (address === null && msg) {

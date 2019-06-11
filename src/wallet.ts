@@ -112,7 +112,7 @@ export default class TetherWalletHelper extends BaseBitcoinWalletHelper {
    * @returns {{txHex: *|string, txId: *|string, fee: *, inputAmount: string, outputAmount: string, changeAmount: string, outputWithIndex: Array}}
    */
   buildSimpleSend (utxos, targets, fee, changeAddress, targetAddress, amount, network = `testnet`, sign = true) {
-    const realNetwork = this._parseNetwork(network)
+    const realNetwork = this.parseNetwork(network)
     const txBuilder = new this._bitcoin.TransactionBuilder(realNetwork, 3000)
     txBuilder.setVersion(2)
     let totalUtxoBalance = '0'

@@ -113,7 +113,7 @@ export default class TetherWalletHelper extends BaseBitcoinWalletHelper {
    */
   buildSimpleSend (utxos, targets, fee, changeAddress, targetAddress, amount, network = `testnet`, sign = true) {
     const realNetwork = this.parseNetwork(network)
-    const txBuilder = new this._bitcoin.TransactionBuilder(realNetwork, 3000)
+    const txBuilder = new this.bitcoinLib.TransactionBuilder(realNetwork, 3000)
     txBuilder.setVersion(2)
     let totalUtxoBalance = '0'
     if (utxos.length === 0) {
@@ -137,7 +137,7 @@ export default class TetherWalletHelper extends BaseBitcoinWalletHelper {
     // 添加usdt输出
     const data = [ this.getOmniPayload(amount).hexToBuffer_() ]
 
-    const omniOutput = this._bitcoin.payments.embed({ data }).output
+    const omniOutput = this.bitcoinLib.payments.embed({ data }).output
 
     const dustValue = `546`
     txBuilder.addOutput(targetAddress, dustValue.toNumber_()) // should be first!
@@ -156,7 +156,7 @@ export default class TetherWalletHelper extends BaseBitcoinWalletHelper {
       const {address, amount, msg} = target
       let outputScript = address
       if (address === null && msg) {
-        outputScript = this._bitcoin.script.nullData.output.encode(Buffer.from(msg, 'utf8'))
+        outputScript = this.bitcoinLib.script.nullData.output.encode(Buffer.from(msg, 'utf8'))
       }
       let index = null
       try {

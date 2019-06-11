@@ -29,42 +29,47 @@ describe('usdtWalletHelper', () => {
     }
   })
 
-  // it('buildSimpleSend', async () => {
-  //   try {
-  //     const tx = walletHelper.buildSimpleSend(
-  //       [
-  //         {
-  //           txid: `ddcd1cb114c65f8e9b48977936e1ef2acbb3be5b2987618b10fd122b485e62c6`,
-  //           index: 2,
-  //           balance: `30000`,
-  //           wif: [
-  //             ``,
-  //           ],
-  //           type: `p2sh(p2ms)`,
-  //           pubkeys: [
-  //             "03b48aaed5afd55af800bf3d7fb9d0b62507548237b10820aaae8b3af192ff33a1",
-  //             "031b022777c4e4ddf7cdbb216c51c9666b4f59636cc11f2ad15022ef5e0f0ca397",
-  //             "028d2d5f8815dda6a5a20635d3c8064ae280cced71580d202367ac819ce2910365",
-  //             "0207e3c205361b2755cf03d2d4eff727f75d505958b4ac42bf915b41bc0a188461"
-  //           ],
-  //           m: 2,
-  //         },
-  //       ],
-  //       [],
-  //       `10000`,
-  //       `3AgHM7WNCqxc5AUr1g69uK4ikKCgrqb5cZ`,
-  //       `3PdNbu6rPP3dXN7XTVAodJkuPN2nEngxWn`,
-  //       `10000000`,
-  //       `mainnet`
-  //     )
-  //     // logger.error(JSON.stringify(tx))
-  //     assert.strictEqual(tx[`txId`], '9a01be589fdf6791a60ed9cebceb577613e7f3b542fb4df4af09e32dbfe6eb2a')
-  //   } catch (err) {
-  //     logger.error(err)
-  //     assert.throws(() => {
-  //     }, err)
-  //   }
-  // })
+  it('buildSimpleSend', async () => {
+    try {
+      const tx = walletHelper.buildSimpleSend(
+        [
+          {
+            'txid': 'f71885c81df375b17491269c583cb8a1837412d19460880485a5362a53822921',
+            'index': 0,
+            'balance': '4000000',
+            'type': 'p2sh(p2wpkh)',
+            'wif': 'cRWu81dLiLXqnwhZjU2UGBjpPR2ERQpXQQrFjJWkPW1jn9pM2QiW'
+          },
+          {
+            'txid': '88f7bb3f720259b2590bc21fb0271dd5caf20c15a3afc371670287e63b1e98d9',
+            'index': 0,
+            'balance': '6600000',
+            'type': 'p2sh(p2wpkh)',
+            'wif': 'cW2Tvn1E9JQsP2BQVAZ42CPdDEtae5fGceobzVpUgoWt4NoMakq9'
+          },
+          {
+            'txid': '23412e59fd3b2a7f6b2cf91dbf56fac06f740bbec8cf25ce7648a6e1a8284e2b',
+            'index': 0,
+            'balance': '3400000',
+            'type': 'p2sh(p2wpkh)',
+            'wif': 'cW2Tvn1E9JQsP2BQVAZ42CPdDEtae5fGceobzVpUgoWt4NoMakq9'
+          }
+        ],
+        [],
+        `10000`,
+        `2My1UpKsy9ZTRxEac9B5NC3BrUKqx5CCppp`,
+        `2My1UpKsy9ZTRxEac9B5NC3BrUKqx5CCppp`,
+        `10000000`,
+        `testnet`
+      )
+      // global.logger.error(JSON.stringify(tx))
+      assert.strictEqual(tx[`txId`], '4ccd87cef7da7f1f3560d31e883178a00947331a2b546e1e3bf6d26b28fc1f71')
+    } catch (err) {
+      global.logger.error(err)
+      assert.throws(() => {
+      }, err)
+    }
+  })
 
   // it('getTestnetCoin', async () => {
   //   try {
@@ -93,7 +98,7 @@ describe('usdtWalletHelper', () => {
   //     // logger.error(tx)
   //     assert.strictEqual(tx['outputWithIndex'][0]['address'], 'moneyqMan7uh8FqdCA2BV5yZ8qVrc9ikLP')
   //   } catch (err) {
-  //     logger.error(err)
+  //     global.logger.error(err)
   //     assert.throws(() => {
   //     }, err)
   //   }

@@ -1,10 +1,14 @@
 import '@pefish/js-node-assist';
 import BaseBitcoinWalletHelper from '@pefish/js-coin-btc/lib/base/base_bitcoinjs_lib';
+import Remote from './remote';
+import { BtcRemoteConfig } from '@pefish/js-coin-btc';
 export default class TetherWalletHelper extends BaseBitcoinWalletHelper {
     [x: string]: any;
     decimals: number;
     bitcoinLib: any;
+    remoteClient: Remote;
     constructor();
+    initRemoteClient(config: BtcRemoteConfig): void;
     /**
      * 获取usdt测试币
      * @param utxos
@@ -16,7 +20,6 @@ export default class TetherWalletHelper extends BaseBitcoinWalletHelper {
     getTestnetCoin(utxos: any, fee: any, changeAddress: any, amount: any): Promise<any>;
     /**
      * 发送tether货币(在线)
-     * @param rpcClient
      * @param amount {string} 单位最小
      * @param tokenType {number} 货币类型
      * @param utxos {array} 输入
@@ -28,7 +31,7 @@ export default class TetherWalletHelper extends BaseBitcoinWalletHelper {
      * @param network
      * @returns {Promise<*>}
      */
-    buildSimpleSendTx(rpcClient: any, amount: any, tokenType: any, utxos: any, targetAddress: any, targetAmount: any, changeAddress: any, fee: any, targets?: any[], network?: string): Promise<any>;
+    buildSimpleSendTx(amount: any, tokenType: any, utxos: any, targetAddress: any, targetAmount: any, changeAddress: any, fee: any, targets?: any[], network?: string): Promise<any>;
     getOmniPayload(amount: any, currency?: string): string;
     getCurrencyIdByCurrency(currency: any): number;
     /**

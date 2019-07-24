@@ -1,7 +1,8 @@
 import '@pefish/js-node-assist'
 import BaseBitcoinWalletHelper from '@pefish/js-coin-btc/lib/base/base_bitcoinjs_lib'
-import TetherRpcUtil from './rpc'
+import Remote from './remote'
 import ErrorHelper from '@pefish/js-error'
+import { BtcRemoteConfig } from '@pefish/js-coin-btc'
 
 export default class TetherWalletHelper extends BaseBitcoinWalletHelper {
 
@@ -9,10 +10,15 @@ export default class TetherWalletHelper extends BaseBitcoinWalletHelper {
 
   decimals: number = 8
   bitcoinLib: any
+  remoteClient: Remote
 
   constructor () {
     super()
     this.bitcoinLib = require('@pefish/bitcoinjs-lib')
+  }
+
+  initRemoteClient (config: BtcRemoteConfig): void {
+    this.remoteClient = new Remote(config)
   }
 
   /**
@@ -40,7 +46,6 @@ export default class TetherWalletHelper extends BaseBitcoinWalletHelper {
 
   /**
    * 发送tether货币(在线)
-   * @param rpcClient
    * @param amount {string} 单位最小
    * @param tokenType {number} 货币类型
    * @param utxos {array} 输入
@@ -52,23 +57,27 @@ export default class TetherWalletHelper extends BaseBitcoinWalletHelper {
    * @param network
    * @returns {Promise<*>}
    */
-  async buildSimpleSendTx (rpcClient, amount, tokenType, utxos, targetAddress, targetAmount, changeAddress, fee, targets = [], network = 'testnet') {
+  async buildSimpleSendTx (amount, tokenType, utxos, targetAddress, targetAmount, changeAddress, fee, targets = [], network = 'testnet') {
+    if (!this.remoteClient) {
+      throw new ErrorHelper(`please init remote client first`)
+    }
+    
     if (utxos.length === 0) {
       throw new ErrorHelper(`没有输入`)
     }
-    const payload = await TetherRpcUtil.createSimpleSendPayload(rpcClient, amount, tokenType)
+    const payload = await this.remoteClient.createSimpleSendPayload(amount, tokenType)
     utxos.forEach((utxo) => {
       const { balance, index } = utxo
       utxo['value'] = balance.unShiftedBy_(this.decimals)
       utxo['vout'] = index
     })
-    const unsignedRawTx = await rpcClient.createRawTransaction(utxos, {})
-    const unsignedRawTxWithOpReturn = await TetherRpcUtil.attachOpReturn(rpcClient, unsignedRawTx, payload)
-    let withReference = await TetherRpcUtil.attachReference(rpcClient, unsignedRawTxWithOpReturn, targetAddress, targetAmount)
+    const unsignedRawTx = await this.remoteClient.client.createRawTransaction(utxos, {})
+    const unsignedRawTxWithOpReturn = await this.remoteClient.attachOpReturn(unsignedRawTx, payload)
+    let withReference = await this.remoteClient.attachReference(unsignedRawTxWithOpReturn, targetAddress, targetAmount)
     for (const {address, amount} of targets) {
-      withReference = await TetherRpcUtil.attachReference(rpcClient, withReference, address, amount)
+      withReference = await this.remoteClient.attachReference(withReference, address, amount)
     }
-    const withChange = await TetherRpcUtil.attachChangeOutput(rpcClient, withReference, utxos, changeAddress, fee.unShiftedBy_(8))
+    const withChange = await this.remoteClient.attachChangeOutput(withReference, utxos, changeAddress, fee.unShiftedBy_(8))
     const result = await this.signTxHex(withChange, utxos, network)
     let inputAmount = '0'
     utxos.forEach((utxo) => {

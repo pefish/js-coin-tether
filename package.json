@@ -1,6 +1,6 @@
 {
   "name": "@pefish/js-coin-tether",
-  "version": "0.2.2",
+  "version": "0.3.3",
   "description": "tether tool of js",
   "keywords": [
     "common",
@@ -18,10 +18,12 @@
     "type": "git",
     "url": "https://github.com/pefish/js-tether"
   },
+  "types": "./types/index.d.ts",
+  "main": "./lib/index.js",
   "scripts": {
-    "test": "mocha --require ts-node/register src/*.test.ts",
-    "build": "tsc && yarn tslint",
-    "tslint": "tslint -c tslint.json -p tsconfig.json",
+    "test": "mocha --timeout 20000 --require ts-node/register src/*.test.ts",
+    "t": "mocha --timeout 20000 --require ts-node/register",
+    "build": "rm -rf lib types && tsc",
     "prepublish": "yarn build"
   },
   "devDependencies": {
@@ -34,8 +36,8 @@
   },
   "dependencies": {
     "@pefish/bitcoinjs-lib": "^5.2.0",
-    "@pefish/js-coin-btc": "^0.3.0",
-    "@pefish/js-error": "^0.0.5",
-    "@pefish/js-node-assist": "^0.6.0"
+    "@pefish/js-coin-btc": "^0.3.7",
+    "@pefish/js-error": "^0.1.1",
+    "@pefish/js-node-assist": "^0.6.6"
   }
 }

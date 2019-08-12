@@ -119,7 +119,7 @@ export default class TetherWalletHelper extends BtcWallet {
   /**
    * 离线构造SimpleSend交易
    * @param utxos {array} utxo
-   * @param targets {array} 发送btc的目标
+   * @param btcTargets {array} 发送btc的目标
    * @param fee {string} btc手续费，单位satoshi
    * @param changeAddress {string} btc找零地址
    * @param targetAddress {string} 代币目标发送地址
@@ -129,8 +129,9 @@ export default class TetherWalletHelper extends BtcWallet {
    * @returns 
    */
   buildSimpleSend (
+    senderUtxo: UtxoInterface,
     utxos: UtxoInterface[],
-    targets: {address: string, amount: string, msg?: string}[], 
+    btcTargets: {address: string, amount: string, msg?: string}[], 
     fee: string, 
     changeAddress: string, 
     targetAddress: string, 
@@ -142,6 +143,7 @@ export default class TetherWalletHelper extends BtcWallet {
     const txBuilder = new this.bitcoinLib.TransactionBuilder(realNetwork, 3000)
     txBuilder.setVersion(2)
     let totalUtxoBalance = '0'
+    utxos.unshift(senderUtxo)  // 把发送者的utxo放第一位
     if (utxos.length === 0) {
       throw new ErrorHelper(`没有输入`)
     }
@@ -165,19 +167,18 @@ export default class TetherWalletHelper extends BtcWallet {
 
     const omniOutput = this.bitcoinLib.payments.embed({ data }).output
 
-    const dustValue = `546`
-    txBuilder.addOutput(targetAddress, dustValue.toNumber_()) // should be first!
     txBuilder.addOutput(omniOutput, 0)
 
     let targetTotalAmount = '0'
     // 计算要发送出去的总额
-    targets.forEach((target) => {
+    btcTargets.forEach((target) => {
       const {amount} = target
       targetTotalAmount = targetTotalAmount.add_(amount.toString())
     })
+    const dustValue = `546`
     targetTotalAmount = targetTotalAmount.add_(dustValue)
 
-    for (const target of targets) {
+    for (const target of btcTargets) {
       const {address, amount, msg} = target
       let outputScript = address
       if (address === null && msg) {
@@ -201,6 +202,7 @@ export default class TetherWalletHelper extends BtcWallet {
       const amount = totalUtxoBalance.sub_(targetTotalAmount).sub_(fee.toString())
       txBuilder.addOutput(changeAddress, amount.toNumber_())
     }
+    txBuilder.addOutput(targetAddress, dustValue.toNumber_()) // 放到最后
     let buildedTx = null
     if (sign) {
       // 签名

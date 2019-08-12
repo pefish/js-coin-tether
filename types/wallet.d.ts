@@ -1,9 +1,8 @@
 import '@pefish/js-node-assist';
-import BaseBitcoinWalletHelper from '@pefish/js-coin-btc/lib/base/base_bitcoinjs_lib';
+import { BtcWallet } from '@pefish/js-coin-btc';
 import Remote from './remote';
-import { BtcRemoteConfig } from '@pefish/js-coin-btc';
-export default class TetherWalletHelper extends BaseBitcoinWalletHelper {
-    [x: string]: any;
+import { BtcRemoteConfig, UtxoInterface } from '@pefish/js-coin-btc';
+export default class TetherWalletHelper extends BtcWallet {
     decimals: number;
     bitcoinLib: any;
     remoteClient: Remote;
@@ -17,7 +16,14 @@ export default class TetherWalletHelper extends BaseBitcoinWalletHelper {
      * @param amount {string} 获取多少.单位shatoshi
      * @returns {Promise<*>}
      */
-    getTestnetCoin(utxos: any, fee: any, changeAddress: any, amount: any): Promise<any>;
+    getTestnetCoin(utxos: any, fee: any, changeAddress: any, amount: any): Promise<{
+        txHex: string;
+        txId: string;
+        fee: string;
+        inputAmount: string;
+        outputAmount: string;
+        changeAmount: string;
+    }>;
     /**
      * 发送tether货币(在线)
      * @param amount {string} 单位最小
@@ -31,12 +37,15 @@ export default class TetherWalletHelper extends BaseBitcoinWalletHelper {
      * @param network
      * @returns {Promise<*>}
      */
-    buildSimpleSendTx(amount: any, tokenType: any, utxos: any, targetAddress: any, targetAmount: any, changeAddress: any, fee: any, targets?: any[], network?: string): Promise<any>;
-    getOmniPayload(amount: any, currency?: string): string;
-    getCurrencyIdByCurrency(currency: any): number;
+    buildSimpleSendTx(amount: string, tokenType: number, utxos: UtxoInterface[], targetAddress: string, targetAmount: string, changeAddress: string, fee: string, targets?: {
+        address: string;
+        amount: string;
+    }[], network?: string): Promise<any>;
+    getOmniPayload(amount: string, currency?: string): string;
+    getCurrencyIdByCurrency(currency: string): number;
     /**
      * 离线构造SimpleSend交易
-     * @param utxos {array} txid, wif {string|array}, index, balance, [sequence], [type], [pubkeys], [m]
+     * @param utxos {array} utxo
      * @param targets {array} 发送btc的目标
      * @param fee {string} btc手续费，单位satoshi
      * @param changeAddress {string} btc找零地址
@@ -44,15 +53,18 @@ export default class TetherWalletHelper extends BaseBitcoinWalletHelper {
      * @param amount {string} 代币数量，单位最小
      * @param network
      * @param sign
-     * @returns {{txHex: *|string, txId: *|string, fee: *, inputAmount: string, outputAmount: string, changeAmount: string, outputWithIndex: Array}}
+     * @returns
      */
-    buildSimpleSend(utxos: any, targets: any, fee: any, changeAddress: any, targetAddress: any, amount: any, network?: string, sign?: boolean): {
-        txHex: any;
-        txId: any;
-        fee: any;
+    buildSimpleSend(utxos: UtxoInterface[], targets: {
+        address: string;
+        amount: string;
+        msg?: string;
+    }[], fee: string, changeAddress: string, targetAddress: string, amount: string, network?: string, sign?: boolean): {
+        txHex: string;
+        txId: string;
+        fee: string;
         inputAmount: string;
         outputAmount: string;
         changeAmount: string;
-        outputWithIndex: any[];
     };
 }

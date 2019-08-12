@@ -1,13 +1,11 @@
 import '@pefish/js-node-assist'
-import BaseBitcoinWalletHelper from '@pefish/js-coin-btc/lib/base/base_bitcoinjs_lib'
+import { BtcWallet } from '@pefish/js-coin-btc'
 import Remote from './remote'
 import ErrorHelper from '@pefish/js-error'
-import { BtcRemoteConfig } from '@pefish/js-coin-btc'
+import { BtcRemoteConfig, UtxoInterface } from '@pefish/js-coin-btc'
 
-export default class TetherWalletHelper extends BaseBitcoinWalletHelper {
 
-  [x: string]: any;
-
+export default class TetherWalletHelper extends BtcWallet {
   decimals: number = 8
   bitcoinLib: any
   remoteClient: Remote
@@ -57,7 +55,17 @@ export default class TetherWalletHelper extends BaseBitcoinWalletHelper {
    * @param network
    * @returns {Promise<*>}
    */
-  async buildSimpleSendTx (amount, tokenType, utxos, targetAddress, targetAmount, changeAddress, fee, targets = [], network = 'testnet') {
+  async buildSimpleSendTx (
+    amount: string, 
+    tokenType: number,
+    utxos: UtxoInterface[],
+    targetAddress: string,
+    targetAmount: string,
+    changeAddress: string,
+    fee: string,
+    targets: {address: string, amount: string}[] = [], 
+    network: string = 'testnet'
+  ): Promise<any> {
     if (!this.remoteClient) {
       throw new ErrorHelper(`please init remote client first`)
     }
@@ -89,7 +97,7 @@ export default class TetherWalletHelper extends BaseBitcoinWalletHelper {
     return result
   }
 
-  getOmniPayload (amount, currency = `USDT`) {
+  getOmniPayload (amount: string, currency: string = `USDT`): string {
     const hexAmount = amount.decimalToHexString_(false).padStart(16, '0').toUpperCase()
     const omniPayload = [
       '6f6d6e69', // omni
@@ -100,7 +108,7 @@ export default class TetherWalletHelper extends BaseBitcoinWalletHelper {
     return omniPayload
   }
 
-  getCurrencyIdByCurrency (currency) {
+  getCurrencyIdByCurrency (currency: string): number {
     if (currency === `USDT`) {
       return 31
     } else {
@@ -110,7 +118,7 @@ export default class TetherWalletHelper extends BaseBitcoinWalletHelper {
 
   /**
    * 离线构造SimpleSend交易
-   * @param utxos {array} txid, wif {string|array}, index, balance, [sequence], [type], [pubkeys], [m]
+   * @param utxos {array} utxo
    * @param targets {array} 发送btc的目标
    * @param fee {string} btc手续费，单位satoshi
    * @param changeAddress {string} btc找零地址
@@ -118,9 +126,18 @@ export default class TetherWalletHelper extends BaseBitcoinWalletHelper {
    * @param amount {string} 代币数量，单位最小
    * @param network
    * @param sign
-   * @returns {{txHex: *|string, txId: *|string, fee: *, inputAmount: string, outputAmount: string, changeAmount: string, outputWithIndex: Array}}
+   * @returns 
    */
-  buildSimpleSend (utxos, targets, fee, changeAddress, targetAddress, amount, network = `testnet`, sign = true) {
+  buildSimpleSend (
+    utxos: UtxoInterface[],
+    targets: {address: string, amount: string, msg?: string}[], 
+    fee: string, 
+    changeAddress: string, 
+    targetAddress: string, 
+    amount: string, 
+    network = `testnet`, 
+    sign = true
+  ): { txHex: string, txId: string, fee: string, inputAmount: string, outputAmount: string, changeAmount: string} {
     const realNetwork = this.parseNetwork(network)
     const txBuilder = new this.bitcoinLib.TransactionBuilder(realNetwork, 3000)
     txBuilder.setVersion(2)
@@ -160,19 +177,14 @@ export default class TetherWalletHelper extends BaseBitcoinWalletHelper {
     })
     targetTotalAmount = targetTotalAmount.add_(dustValue)
 
-    const outputWithIndex = []
     for (const target of targets) {
       const {address, amount, msg} = target
       let outputScript = address
       if (address === null && msg) {
         outputScript = this.bitcoinLib.script.nullData.output.encode(Buffer.from(msg, 'utf8'))
       }
-      let index = null
       try {
-        index = txBuilder.addOutput(outputScript, amount.toNumber_())
-        outputWithIndex.push(Object.assign(target, {
-          index
-        }))
+        txBuilder.addOutput(outputScript, amount.toNumber_())
       } catch (err) {
         throw new ErrorHelper('构造output出错' + err['message'], 0, JSON.stringify(target), err)
       }
@@ -187,12 +199,7 @@ export default class TetherWalletHelper extends BaseBitcoinWalletHelper {
     }
     if (changeAmount !== '0') {
       const amount = totalUtxoBalance.sub_(targetTotalAmount).sub_(fee.toString())
-      const index = txBuilder.addOutput(changeAddress, amount.toNumber_())
-      outputWithIndex.push({
-        address: changeAddress,
-        amount,
-        index
-      })
+      txBuilder.addOutput(changeAddress, amount.toNumber_())
     }
     let buildedTx = null
     if (sign) {
@@ -208,7 +215,6 @@ export default class TetherWalletHelper extends BaseBitcoinWalletHelper {
       inputAmount: totalUtxoBalance.toString(),
       outputAmount: targetTotalAmount.toString(),
       changeAmount: changeAmount.toString(),
-      outputWithIndex
     }
   }
 }

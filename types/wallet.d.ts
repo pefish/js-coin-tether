@@ -45,7 +45,8 @@ export default class TetherWalletHelper extends BtcWallet {
     getCurrencyIdByCurrency(currency: string): number;
     /**
      * 离线构造SimpleSend交易
-     * @param utxos {array} utxo
+     * @param senderUtxo {object} usdt发送者的utxo
+     * @param otherUtxos {array} 其他utxo
      * @param btcTargets {array} 发送btc的目标
      * @param fee {string} btc手续费，单位satoshi
      * @param changeAddress {string} btc找零地址
@@ -55,7 +56,7 @@ export default class TetherWalletHelper extends BtcWallet {
      * @param sign
      * @returns
      */
-    buildSimpleSend(senderUtxo: UtxoInterface, utxos: UtxoInterface[], btcTargets: {
+    buildSimpleSend(senderUtxo: UtxoInterface, otherUtxos: UtxoInterface[], btcTargets: {
         address: string;
         amount: string;
         msg?: string;

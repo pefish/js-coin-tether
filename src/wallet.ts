@@ -118,7 +118,8 @@ export default class TetherWalletHelper extends BtcWallet {
 
   /**
    * 离线构造SimpleSend交易
-   * @param utxos {array} utxo
+   * @param senderUtxo {object} usdt发送者的utxo
+   * @param otherUtxos {array} 其他utxo
    * @param btcTargets {array} 发送btc的目标
    * @param fee {string} btc手续费，单位satoshi
    * @param changeAddress {string} btc找零地址
@@ -130,7 +131,7 @@ export default class TetherWalletHelper extends BtcWallet {
    */
   buildSimpleSend (
     senderUtxo: UtxoInterface,
-    utxos: UtxoInterface[],
+    otherUtxos: UtxoInterface[],
     btcTargets: {address: string, amount: string, msg?: string}[], 
     fee: string, 
     changeAddress: string, 
@@ -143,8 +144,8 @@ export default class TetherWalletHelper extends BtcWallet {
     const txBuilder = new this.bitcoinLib.TransactionBuilder(realNetwork, 3000)
     txBuilder.setVersion(2)
     let totalUtxoBalance = '0'
-    utxos.unshift(senderUtxo)  // 把发送者的utxo放第一位
-    if (utxos.length === 0) {
+    otherUtxos.unshift(senderUtxo)  // 把发送者的utxo放第一位
+    if (otherUtxos.length === 0) {
       throw new ErrorHelper(`没有输入`)
     }
 
@@ -152,7 +153,7 @@ export default class TetherWalletHelper extends BtcWallet {
       throw new ErrorHelper(`手续费过高，请检查`)
     }
 
-    for (const utxo of utxos) {
+    for (const utxo of otherUtxos) {
       const {txid, index, balance, sequence} = utxo
       if (sequence !== undefined) {
         txBuilder.addInput(txid, index, sequence)
@@ -206,7 +207,7 @@ export default class TetherWalletHelper extends BtcWallet {
     let buildedTx = null
     if (sign) {
       // 签名
-      buildedTx = this._signUtxos(txBuilder, utxos, realNetwork)
+      buildedTx = this._signUtxos(txBuilder, otherUtxos, realNetwork)
     } else {
       buildedTx = txBuilder.buildIncomplete()
     }

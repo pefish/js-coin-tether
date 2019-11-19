@@ -23,7 +23,7 @@ describe('usdtWalletHelper', () => {
       // logger.error(result)
       assert.strictEqual(result, '6f6d6e69000000000000001f000000003B9ACA00')
     } catch (err) {
-      global.logger.error(err)
+      console.error(err)
       assert.throws(() => {
       }, err)
     }
@@ -62,10 +62,10 @@ describe('usdtWalletHelper', () => {
         `10000000`,
         `testnet`
       )
-      // global.logger.error(JSON.stringify(tx))
+      // console.error(JSON.stringify(tx))
       assert.strictEqual(tx[`txId`], '4ccd87cef7da7f1f3560d31e883178a00947331a2b546e1e3bf6d26b28fc1f71')
     } catch (err) {
-      global.logger.error(err)
+      console.error(err)
       assert.throws(() => {
       }, err)
     }
@@ -89,10 +89,10 @@ describe('usdtWalletHelper', () => {
   //       [],
   //       'testnet',
   //     )
-  //     global.logger.error(tx)
+  //     console.error(tx)
   //     // assert.strictEqual(tx['txId'], 'a64f2266d55ab475762631e5bd38f839884982cbb47f34ca9ed16a4b4cf93249')
   //   } catch (err) {
-  //     global.logger.error(err)
+  //     console.error(err)
   //     assert.throws(() => {
   //     }, err)
   //   }

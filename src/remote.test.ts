@@ -19,10 +19,10 @@ describe('usdtWalletHelper', () => {
   it('getInfo', async () => {
     try {
       const result = await helper.getInfo()
-      // global.logger.error(result)
+      // console.error(result)
       assert.strictEqual(result[`block`] > 0, true)
     } catch (err) {
-      global.logger.error(err)
+      console.error(err)
       assert.throws(() => {
       }, err)
     }

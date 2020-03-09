@@ -53,7 +53,7 @@ export default class Remote extends BtcRemote {
       txHex,
       targetAddress
     ]
-    amount && params.push(amount.unShiftedBy_(8).toNumber_())
+    amount && params.push(amount.unShiftedBy_(8))
     return this.request('omni_createrawtx_reference', params)
   }
 

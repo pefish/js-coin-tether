@@ -37,7 +37,7 @@ export default class TetherWalletHelper extends BtcWallet {
      * @param network
      * @returns {Promise<*>}
      */
-    buildSimpleSendTx(amount: string, tokenType: number, utxos: UtxoInterface[], targetAddress: string, targetAmount: string, changeAddress: string, fee: string, targets?: {
+    buildSimpleSendTxOnLine(amount: string, tokenType: number, utxos: UtxoInterface[], targetAddress: string, targetAmount: string, changeAddress: string, fee: string, targets?: {
         address: string;
         amount: string;
     }[], network?: string): Promise<any>;
@@ -56,7 +56,7 @@ export default class TetherWalletHelper extends BtcWallet {
      * @param sign
      * @returns
      */
-    buildSimpleSend(senderUtxo: UtxoInterface, otherUtxos: UtxoInterface[], btcTargets: {
+    buildSimpleSendTx(senderUtxo: UtxoInterface, otherUtxos: UtxoInterface[], btcTargets: {
         address: string;
         amount: string;
         msg?: string;
